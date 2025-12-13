@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'custom_font.dart';
 import 'constants.dart';
 
-class NewsfeedCard extends StatelessWidget {
+class NewsfeedCard extends StatefulWidget {
   final String userName;
   final String postContent;
   final String date;
@@ -24,6 +24,20 @@ class NewsfeedCard extends StatelessWidget {
   });
 
   @override
+  State<NewsfeedCard> createState() => _NewsfeedCardState();
+}
+
+class _NewsfeedCardState extends State<NewsfeedCard> {
+  late int likes;
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    likes = widget.numOfLikes;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       color: const Color(0xFFF6F2F8),
@@ -34,15 +48,14 @@ class NewsfeedCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ---------------- PROFILE ROW ----------------
+// ---------------- PROFILE ROW ----------------
             Row(
               children: [
-                
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.grey.shade300,
-                  backgroundImage: avatarUrl != null
-                      ? AssetImage(avatarUrl!)
+                  backgroundImage: widget.avatarUrl != null
+                      ? AssetImage(widget.avatarUrl!)
                       : const AssetImage("assets/images/profile.jpg"),
                 ),
 
@@ -52,7 +65,7 @@ class NewsfeedCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomFont(
-                      text: userName,
+                      text: widget.userName,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -60,7 +73,7 @@ class NewsfeedCard extends StatelessWidget {
                     Row(
                       children: [
                         CustomFont(
-                          text: date,
+                          text: widget.date,
                           fontSize: 11.sp,
                           color: Colors.grey,
                         ),
@@ -78,23 +91,25 @@ class NewsfeedCard extends StatelessWidget {
 
             SizedBox(height: 10),
 
-            // ---------------- POST CONTENT ----------------
+// ---------------- POST CONTENT ----------------
             CustomFont(
-              text: postContent,
+              text: widget.postContent,
               fontSize: 13.sp,
               color: Colors.black,
             ),
 
             SizedBox(height: 10),
 
-            // ---------------- IMAGE OR PLACEHOLDER ----------------
-            hasImage ? ImagePreviewWidget(imageUrl: imageUrl) : SizedBox(),
+// ---------------- IMAGE ----------------
+            widget.hasImage
+                ? ImagePreviewWidget(imageUrl: widget.imageUrl)
+                : SizedBox(),
 
             SizedBox(height: 10),
 
-            // ---------------- REACTION BUTTONS ----------------
+// ---------------- REACTION BUTTONS ----------------
             Container(
-              padding: EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(vertical: 6),
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(color: Colors.grey.shade300, width: 1),
@@ -103,15 +118,70 @@ class NewsfeedCard extends StatelessWidget {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  PostActionButton(icon: Icons.thumb_up_alt_outlined, label: "Like"),
-                  PostActionButton(icon: Icons.comment_outlined, label: "Comment"),
-                  PostActionButton(icon: Icons.share_outlined, label: "Share"),
+                children: [
+
+// LIKE BUTTON 
+TextButton.icon(
+  style: TextButton.styleFrom(
+    foregroundColor:
+        isLiked ? Color(0xFFFF709E) : Colors.grey.shade700,
+  ),
+  onPressed: () {
+    print("Like pressed");
+    setState(() {
+      isLiked = !isLiked;
+      likes += isLiked ? 1 : -1;
+    });
+  },
+  icon: Icon(
+    isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+    size: 15,
+    color: isLiked ? Color(0xFFFF709E) : Colors.grey.shade700,
+  ),
+  label: Text(
+    "$likes",
+    style: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: isLiked ? Color(0xFFFF709E) : Colors.grey.shade700,
+    ),
+  ),
+),
+
+                  // COMMENT BUTTON 
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey.shade700,
+                    ),
+                    onPressed: () {
+                      print("Comment pressed");
+                    },
+                    icon: const Icon(Icons.mode_comment_outlined, size: 15),
+                    label: const Text(
+                      "Comment",
+                      style: TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+
+                  // SHARE BUTTON 
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey.shade700,
+                    ),
+                    onPressed: () {
+                      print("Share pressed");
+                    },
+                    icon: const Icon(Icons.share_outlined, size: 15),
+                    label: const Text(
+                      "Share",
+                      style: TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ],
               ),
             ),
-
-            SizedBox(height: 10),
 
             // ---------------- COMMENT FIELD ----------------
             Row(
@@ -124,7 +194,8 @@ class NewsfeedCard extends StatelessWidget {
                 SizedBox(width: 10),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: Color(0xFFE9ECEF),
                       borderRadius: BorderRadius.circular(10),
@@ -154,9 +225,8 @@ class NewsfeedCard extends StatelessWidget {
   }
 }
 
-//
-// IMAGE PLACEHOLDER WIDGET
 
+// IMAGE PLACEHOLDER WIDGET
 class ImagePreviewWidget extends StatelessWidget {
   final String? imageUrl;
 
@@ -183,7 +253,7 @@ class ImagePreviewWidget extends StatelessWidget {
   }
 }
 
-// POST ACTION BUTTON
+// POST ACTION BUTTON 
 class PostActionButton extends StatelessWidget {
   final IconData icon;
   final String label;

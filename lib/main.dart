@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '/screens/home_screen.dart';
 import 'screens/newsfeed_screen.dart';
+import 'screens/notification_screen.dart';
 
 void main() {
   runApp(const MuscaFacebook());
@@ -23,6 +24,7 @@ class MuscaFacebook extends StatelessWidget {
           routes: {
             '/home': (context) => const HomeScreen(),
             '/newsfeed': (context) => const NewsFeedScreen(),
+            '/notification': (context) => const NotificationScreen(),
           },
         );
       },
