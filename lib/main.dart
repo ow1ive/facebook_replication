@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '/screens/home_screen.dart';
-import 'screens/newsfeed_screen.dart';
-import 'screens/notification_screen.dart';
 
-void main() {
-  runApp(const MuscaFacebook());
-}
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/splash_screen.dart';
 
-class MuscaFacebook extends StatelessWidget {
-  const MuscaFacebook({super.key});
+void main() => runApp(const FacebookReplication());
+
+class FacebookReplication extends StatelessWidget {
+  const FacebookReplication({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(412, 715),
+      designSize: const Size(412, 915),
       minTextAdapt: true,
-      builder: (context, child) {
+      splitScreenMode: true,
+      builder: (_, child) {
         return MaterialApp(
+          color: Colors.white,
           debugShowCheckedModeBanner: false,
           title: 'Facebook Replication',
-          initialRoute: '/home',
+          initialRoute: '/splash',
           routes: {
             '/home': (context) => const HomeScreen(),
-            '/newsfeed': (context) => const NewsFeedScreen(),
-            '/notification': (context) => const NotificationScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/register': (context) => const RegisterScreen(),
+            '/settings': (context) => const SettingsScreen(),
+            '/splash': (context) => const SplashScreen(),
           },
         );
       },

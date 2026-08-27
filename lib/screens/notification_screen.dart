@@ -1,4 +1,4 @@
-import '../widgets/notification.dart' as notif;
+import '../widgets/custom_info.dart' as notif;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,8 +6,7 @@ class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() =>
-      _NotificationScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
@@ -18,74 +17,102 @@ class _NotificationScreenState extends State<NotificationScreen> {
       width: ScreenUtil().screenWidth,
       child: ListView(
         children: const [
-
-          notif.Notification(
-            name: 'Kirsten Amarillo',
-            post: 'invited you to follow Tyrant Esports',
-            description: 'Tap to view their page',
-          ),
-          Divider(),
-
-          notif.Notification(
-            name: 'Cali',
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
             post: 'loved your post',
-            description: '“finally made it”',
+            description: 'pisces season is here ♓️',
+            date: 'March 14, 2025',
+            numOfLikes: 1643,
+            profileImageUrl: 'assets/images/profile.jpg',
+            imageUrl: 'assets/images/pisces.jpg',
           ),
           Divider(),
 
-          notif.Notification(
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
+            post: 'loved your post',
+            description: 'finally made it',
+            date: '1m ago',
+            profileImageUrl: 'assets/images/profile.jpg',
+            numOfLikes: 0,
+          ),
+          Divider(),
+
+          notif.CustomInformation(
             name: 'Stranger Things',
             post: 'updated their profile picture',
-            description: '"Tap to view their new profile picture"',
+            description: 'Tap to view their new profile picture',
+            date: '5m ago',
+            profileImageUrl: 'assets/images/st.jpg',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
-            name: 'Choc',
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
             post: 'loved your post',
             description: 'stack rg',
+            date: '10m ago',
+            profileImageUrl: 'assets/images/profile.jpg',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
+          notif.CustomInformation(
             name: 'Tine Sombria',
             post: 'shared your post',
             description: 'wippp',
+            date: '15m ago',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
+          notif.CustomInformation(
             name: 'Tine Sombria',
             post: 'shared your post',
             description: 'wiwowiwowiwowi',
+            date: '20m ago',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
-            name: 'Tyrant Esports',
-            post: 'started following you',
-            description: 'You now have 653 followers',
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
+            post: 'loved your post',
+            description: 'wiwiwiowow',
+            date: '30m ago',
+            profileImageUrl: 'assets/images/profile.jpg',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
-            name: 'Slave',
+          notif.CustomInformation(
+            name: 'Tine Sombria',
             post: 'added a new post',
-            description: 'Drop Ready. The streets won\'t wait - neither should you.',
+            description:
+                'Drop Ready. The streets won\'t wait - neither should you.',
+            date: '45m ago',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
-            name: 'Stan',
-            post: 'sent you a friend request',
-            description: 'You have 32 mutual friends',
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
+            post: 'shared your post',
+            description: 'wippp',
+            profileImageUrl: 'assets/images/profile.jpg',
+            date: '1h ago',
+            numOfLikes: 0,
           ),
           Divider(),
 
-          notif.Notification(
-            name: 'Oliver Vergara Musca Jr.',
+          notif.CustomInformation(
+            name: 'Olive Vergara Musca',
             post: 'tagged you in a story',
-            description: 'Story will disappear in 24 hours',
+            description: 'unwind time',
+            profileImageUrl: 'assets/images/profile.jpg',
+            date: '1h ago',
+            numOfLikes: 0,
           ),
           Divider(),
         ],
