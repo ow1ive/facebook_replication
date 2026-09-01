@@ -68,15 +68,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.black,
           ),
           SizedBox(height: 10),
-          CustomFont(
-            text: "from Poblacion, San Andres, Romblon",
-            fontSize: 14.sp,
-            color: Colors.black,
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined, size: 18.sp, color: Colors.black54),
+              SizedBox(width: 8),
+              CustomFont(
+                text: "Sampaloc, Manila",
+                fontSize: 14.sp,
+                color: Colors.black,
+              ),
+            ],
           ),
           SizedBox(height: 8),
-          CustomFont(text: "@ow1ive", fontSize: 14.sp, color: Colors.black),
+          Row(
+            children: [
+              Icon(Icons.home_outlined, size: 18.sp, color: Colors.black54),
+              SizedBox(width: 8),
+              CustomFont(
+                text: "Poblacion, San Andres, Romblon",
+                fontSize: 14.sp,
+                color: Colors.black,
+              ),
+            ],
+          ),
           SizedBox(height: 8),
-          CustomFont(text: "cali maki", fontSize: 14.sp, color: Colors.black),
+          Row(
+            children: [
+              Icon(Icons.cake_outlined, size: 18.sp, color: Colors.black54),
+              SizedBox(width: 8),
+              CustomFont(
+                text: "March 14, 2005",
+                fontSize: 14.sp,
+                color: Colors.black,
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(Icons.camera_alt_outlined, size: 18.sp, color: Colors.black54),
+              SizedBox(width: 8),
+              CustomFont(text: "@ow1ive", fontSize: 14.sp, color: Colors.black),
+            ],
+          ),
         ],
       ),
     );

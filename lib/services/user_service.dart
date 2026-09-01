@@ -29,6 +29,20 @@ class UserService {
     }
   }
 
+  Future<User> getUserById(int id) async {
+    final uri = Uri.parse('$host/users/$id');
+    final response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load user: ${response.statusCode}');
+    }
+  }
+
   Future<void> _saveUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userKey, jsonEncode(user.toJson()));

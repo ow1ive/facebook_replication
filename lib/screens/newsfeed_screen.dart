@@ -2,205 +2,118 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/post_card.dart';
+import '../models/post.dart';
+import '../models/user.dart';
+import '../services/post_service.dart';
+import '../services/user_service.dart';
 
-class NewsFeedScreen extends StatelessWidget {
+class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key});
 
   @override
+  State<NewsFeedScreen> createState() => _NewsFeedScreenState();
+}
+
+class _NewsFeedScreenState extends State<NewsFeedScreen> {
+  final PostService _postService = PostService();
+  final UserService _userService = UserService();
+
+  final List<Post> _posts = [];
+  final Map<int, User> _usersById = {};
+  bool _isLoading = true;
+  String? _error;
+
+  static const List<String> _adImages = [
+    "assets/images/catto.jpg",
+    "assets/images/post.jpg",
+    "assets/images/pisces.jpg",
+    "assets/images/biand.jpg",
+    "assets/images/oliver.jpg",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFeed();
+  }
+
+  Future<void> _loadFeed() async {
+    try {
+      final posts = await _postService.getPosts(limit: 15);
+      final userIds = posts.map((p) => p.userId).toSet();
+      final users = await Future.wait(
+        userIds.map((id) => _userService.getUserById(id)),
+      );
+      if (!mounted) return;
+      setState(() {
+        _posts
+          ..clear()
+          ..addAll(posts);
+        _usersById.addEntries(users.map((u) => MapEntry(u.id, u)));
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Failed to load newsfeed. Please try again later.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        // 🔹 NORMAL POSTS
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_error != null) {
+      return Center(child: Text(_error!));
+    }
+
+    final children = <Widget>[];
+    for (var i = 0; i < _posts.length; i++) {
+      final post = _posts[i];
+      final user = _usersById[post.userId];
+
+      children.add(
         NewsfeedCard(
-          userName: "eggsdoodz",
-          postContent:
-              "day 6 ♡ 25 days of eggsdoodz #art #drawing #doodle #sketckbook #quote",
-          date: "2 hours ago",
-          numOfLikes: 120,
-          avatarUrl: "assets/images/eggs.jpg",
-          hasImage: true,
-          imageUrl: "assets/images/image1.jpg",
+          postId: post.id,
+          userName: user?.fullName ?? 'Unknown user',
+          postContent: post.body,
+          date: 'Just now',
+          numOfLikes: post.likes,
+          avatarUrl: user?.image,
         ),
+      );
 
-        NewsfeedCard(
-          userName: "Art of Jared Klein",
-          postContent: "Ecco food please give me stick-o",
-          date: "1 hour ago",
-          numOfLikes: 233,
-          hasImage: true,
-          avatarUrl: "assets/images/jared.jpg",
-          imageUrl: "assets/images/sticko.jpg",
-        ),
-
-        // ================= ADVERTISEMENT SECTION =================
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-          child: Text(
-            "Advertisement",
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+      if ((i + 1) % 3 == 0) {
+        children.add(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+            child: Text(
+              "Advertisement",
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
+        );
+        children.add(_adCarousel());
+      }
+    }
 
-        CarouselSlider(
-          options: CarouselOptions(
-            viewportFraction: 0.9,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            aspectRatio: 0.9,
-          ),
-          items: [
-            _adItem("assets/images/catto.jpg"),
-            _adItem("assets/images/post.jpg"),
-            _adItem("assets/images/pisces.jpg"),
-            _adItem("assets/images/eggs.jpg"),
-            _adItem("assets/images/jared.jpg"),
-            _adItem("assets/images/biand.jpg"),
-          ],
-        ),
+    children.add(SizedBox(height: 20.h));
 
-        // 🔹 NORMAL POSTS
-        NewsfeedCard(
-          userName: "Biand Cafe",
-          postContent:
-              "Serving joy around town. ☕️ FREE DELIVERY for ₱300+ orders!",
-          date: "30 minutes ago",
-          numOfLikes: 89,
-          hasImage: true,
-          avatarUrl: "assets/images/biand.jpg",
-          imageUrl: "assets/images/biand2.jpg",
-        ),
+    return ListView(children: children);
+  }
 
-        NewsfeedCard(
-          userName: "Oliver Vergara Musca Jr.",
-          postContent: "working in progress",
-          date: "1 hour ago",
-          numOfLikes: 12,
-          hasImage: true,
-          imageUrl: "assets/images/photo1.jpg",
-          avatarUrl: "assets/images/oliver.jpg",
-        ),
-
-        // ================= ADVERTISEMENT SECTION =================
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-          child: Text(
-            "Advertisement",
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        CarouselSlider(
-          options: CarouselOptions(
-            viewportFraction: 0.9,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            aspectRatio: 0.9,
-          ),
-          items: [
-            _adItem("assets/images/photo1.jpg"),
-            _adItem("assets/images/sticko.jpg"),
-            _adItem("assets/images/image1.jpg"),
-            _adItem("assets/images/biand2.jpg"),
-            _adItem("assets/images/oliver.jpg"),
-            _adItem("assets/images/profile.jpg"),
-            _adItem("assets/images/catto.jpg"),
-            _adItem("assets/images/pisces.jpg"),
-          ],
-        ),
-
-        // 🔹 MORE NORMAL POSTS
-        NewsfeedCard(
-          userName: "eggsdoodz",
-          postContent: "New artwork coming soon! Stay tuned 🎨",
-          date: "3 hours ago",
-          numOfLikes: 156,
-          avatarUrl: "assets/images/eggs.jpg",
-          hasImage: true,
-          imageUrl: "assets/images/pisces.jpg",
-        ),
-
-        NewsfeedCard(
-          userName: "Biand Cafe",
-          postContent: "Today's special: Caramel Macchiato ☕️",
-          date: "2 hours ago",
-          numOfLikes: 201,
-          hasImage: true,
-          avatarUrl: "assets/images/biand.jpg",
-          imageUrl: "assets/images/biand2.jpg",
-        ),
-
-        // ================= ADVERTISEMENT SECTION =================
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-          child: Text(
-            "Advertisement",
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        CarouselSlider(
-          options: CarouselOptions(
-            viewportFraction: 0.9,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            aspectRatio: 0.9,
-          ),
-          items: [
-            _adItem("assets/images/jared.jpg"),
-            _adItem("assets/images/eggs.jpg"),
-            _adItem("assets/images/post.jpg"),
-            _adItem("assets/images/image1.jpg"),
-          ],
-        ),
-
-        // 🔹 MORE NORMAL POSTS
-        NewsfeedCard(
-          userName: "Art of Jared Klein",
-          postContent: "New commission available! DM for details",
-          date: "4 hours ago",
-          numOfLikes: 178,
-          hasImage: true,
-          avatarUrl: "assets/images/jared.jpg",
-          imageUrl: "assets/images/sticko.jpg",
-        ),
-
-        NewsfeedCard(
-          userName: "Oliver Vergara Musca Jr.",
-          postContent: "Finished the project! 🎉",
-          date: "5 hours ago",
-          numOfLikes: 95,
-          hasImage: true,
-          imageUrl: "assets/images/photo1.jpg",
-          avatarUrl: "assets/images/oliver.jpg",
-        ),
-
-        // ================= ADVERTISEMENT SECTION =================
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-          child: Text(
-            "Advertisement",
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        CarouselSlider(
-          options: CarouselOptions(
-            viewportFraction: 0.9,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            aspectRatio: 0.9,
-          ),
-          items: [
-            _adItem("assets/images/biand.jpg"),
-            _adItem("assets/images/catto.jpg"),
-            _adItem("assets/images/pisces.jpg"),
-            _adItem("assets/images/profile.jpg"),
-            _adItem("assets/images/oliver.jpg"),
-          ],
-        ),
-
-        SizedBox(height: 20.h),
-      ],
+  Widget _adCarousel() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        viewportFraction: 0.9,
+        enlargeCenterPage: false,
+        enableInfiniteScroll: false,
+        aspectRatio: 0.9,
+      ),
+      items: _adImages.map(_adItem).toList(),
     );
   }
 
